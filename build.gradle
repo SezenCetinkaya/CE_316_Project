@@ -40,7 +40,7 @@ application {
 
 // buildDir temiz ASCII yolda: Masaüstü içindeki ü harfi Gradle test-worker @classpath.txt
 // dosyasında encoding bozukluğuna neden oluyor; bu workaround ile kaçınılıyor
-buildDir = 'C:/tmp/iae-build'
+buildDir = file("${rootDir}/temp")
 
 test {
     useJUnitPlatform()

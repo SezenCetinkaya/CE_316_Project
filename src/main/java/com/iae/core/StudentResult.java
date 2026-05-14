@@ -37,18 +37,22 @@ public class StudentResult {
     public void setExecutionTimeMs(Integer executionTimeMs) { this.executionTimeMs = executionTimeMs; }
 
     public void markCompiled(String status) {
-        // TODO: Gözde
+        this.compileStatus = status;
     }
 
     public void markRun(String status) {
-        // TODO: Gözde
+        this.runStatus = status;
     }
 
     public void recordComparison(String result) {
-        // TODO: Gözde
+        this.runStatus = result;
     }
 
     public void appendError(String message) {
-        // TODO: Gözde
+        if (compileErrorLog == null || compileErrorLog.isBlank()) {
+            compileErrorLog = message;
+        } else {
+            compileErrorLog += "\n" + message;
+        }
     }
 }

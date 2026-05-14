@@ -36,8 +36,19 @@ public class SubmissionProcessor {
                                           Configuration config,
                                           String expectedOutput,
                                           boolean ignoreCase) {
-        // TODO: Gözde
-        return new ArrayList<>();
+        List<StudentResult> results = new ArrayList<>();
+
+        File[] zipFiles = findZipFiles(submissionsDir);
+        if (zipFiles == null) {
+            return results;
+        }
+
+        for (File zipFile : zipFiles) {
+            StudentResult result = processSingle(zipFile, config, expectedOutput, ignoreCase);
+            results.add(result);
+        }
+
+        return results;
     }
 
     /**
@@ -55,18 +66,84 @@ public class SubmissionProcessor {
                                        Configuration config,
                                        String expectedOutput,
                                        boolean ignoreCase) {
-        // TODO: Gözde
-        // Akış:
-        // 1. ZipExtractor.extract(zipFile, workspaceDir)           → InvalidZipException
-        // 2. WorkspaceManager.createWorkspace(studentId)           → IOException
-        // 3. FileLocator.locate(workspace, config.getSourceFilename()) → FileNotFoundException
-        // 4. CommandRunner.compile(config, workspace)              → ProcessResult
-        // 5. Compile başarısızsa → StudentResult(COMPILE_ERROR) döndür, workspace temizle
-        // 6. CommandRunner.run(...)                                → ProcessResult
-        // 7. OutputComparator.compare(actual, expected, ignoreCase) → boolean
-        // 8. StudentResult(PASS / FAIL) oluştur
-        // 9. WorkspaceManager.cleanWorkspace(studentId)
-        return null;
+        StudentResult result = new StudentResult();
+
+        String studentId = extractStudentId(zipFile);
+        result.setStudentId(studentId);
+        result.setZipFilename(zipFile.getName());
+        result.setEvaluatedAt(java.time.LocalDateTime.now().toString());
+
+        File workspace = null;
+
+        try {
+            workspace = workspaceManager.createWorkspace(studentId);
+
+            zipExtractor.extract(zipFile, workspace);
+
+            fileLocator.locate(workspace, config.getSourceFilename());
+
+            commandRunner.setTimeoutSeconds(config.getTimeoutSeconds());
+
+            ProcessResult compileResult = commandRunner.compile(config, workspace);
+
+            if (compileResult.hasFailed()) {
+                result.markCompiled("COMPILE_ERROR");
+                result.markRun("NOT_RUN");
+                result.appendError(compileResult.getCombinedOutput());
+                return result;
+            }
+
+            result.markCompiled("COMPILE_SUCCESS");
+
+            // Prototype seviyesinde runCommand varsa çalıştır
+            if (config.getRunCommand() != null && !config.getRunCommand().isBlank()) {
+                String[] runParts = config.getRunCommand().split("\\s+");
+                ProcessResult runResult = commandRunner.run(runParts, workspace);
+
+                if (runResult.hasFailed()) {
+                    result.markRun("RUNTIME_ERROR");
+                    result.appendError(runResult.getCombinedOutput());
+                    return result;
+                }
+
+                boolean passed = outputComparator.compare(
+                        runResult.getStdout(),
+                        expectedOutput,
+                        ignoreCase
+                );
+
+                result.markRun(passed ? "PASS" : "FAIL");
+
+                if (!passed) {
+                    result.appendError("Student output did not match the expected output.");
+                }
+            } else {
+                result.markRun("RUN_COMMAND_MISSING");
+            }
+
+        } catch (InvalidZipException e) {
+            result.markCompiled("EXTRACTION_ERROR");
+            result.markRun("NOT_RUN");
+            result.appendError(e.getMessage());
+
+        } catch (FileNotFoundException e) {
+            result.markCompiled("FILE_NOT_FOUND");
+            result.markRun("NOT_RUN");
+            result.appendError(e.getMessage());
+
+        } catch (IOException e) {
+            result.markCompiled("IO_ERROR");
+            result.markRun("NOT_RUN");
+            result.appendError(e.getMessage());
+
+        } finally {
+            try {
+                workspaceManager.cleanWorkspace(studentId);
+            } catch (Exception ignored) {
+            }
+        }
+
+        return result;
     }
 
     /**

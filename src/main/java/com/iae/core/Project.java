@@ -43,24 +43,27 @@ public class Project {
 
     public List<StudentResult> getResults() { return results; }
 
-    public static Project load(int id) {
-        // TODO: Gözde
-        return null;
-    }
-
     public void save() {
-        // TODO: Gözde
+        // Prototype aşamasında database bağlanmadan boş bırakılabilir.
+        this.lastRunAt = LocalDateTime.now().toString();
     }
 
     public void setConfiguration(Configuration configuration) {
-        // TODO: Gözde
+        if (configuration != null) {
+            this.configId = configuration.getConfigId();
+        }
     }
 
     public void addResult(StudentResult result) {
-        // TODO: Gözde
+        if (result != null) {
+            results.add(result);
+        }
     }
 
     public void removeResult(int resultId) {
-        // TODO: Gözde
+        results.removeIf(result -> result.getResultId() == resultId);
+    }
+    public static Project load(int id) {
+        return null;
     }
 }
