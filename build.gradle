@@ -51,6 +51,9 @@ tasks.withType(JavaExec).configureEach {
 test {
     useJUnitPlatform()
     systemProperty 'file.encoding', 'UTF-8'
+    jvmArgs "-Djavafx.cachedir=${file("${rootDir}/.openjfx-cache-test").absolutePath}"
+    // JavaFX toolkit is global per JVM — UI tests must not run in parallel
+    maxParallelForks = 1
 }
 
 // Fat-JAR: tüm bağımlılıklar tek jar içinde — Inno Setup bu jar'ı dağıtır (R1)

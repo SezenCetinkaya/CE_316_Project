@@ -7,11 +7,29 @@ import java.sql.Statement;
 
 public class DatabaseHelper {
 
-    private static final String DB_URL = "jdbc:sqlite:iae.db";
+    private static final String DEFAULT_DB_URL = "jdbc:sqlite:iae.db";
+    private final String dbUrl;
+
+    public DatabaseHelper() {
+        this(resolveDbUrl());
+    }
+
+    /** Package-visible for tests that inject a temporary SQLite file. */
+    DatabaseHelper(String dbUrl) {
+        this.dbUrl = dbUrl.startsWith("jdbc:") ? dbUrl : "jdbc:sqlite:" + dbUrl;
+    }
+
+    private static String resolveDbUrl() {
+        String override = System.getProperty("iae.db.url");
+        if (override == null || override.isBlank()) {
+            return DEFAULT_DB_URL;
+        }
+        return override.startsWith("jdbc:") ? override : "jdbc:sqlite:" + override;
+    }
 
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection(DB_URL);
+            return DriverManager.getConnection(dbUrl);
         } catch (SQLException e) {
             System.err.println("Bağlantı hatası: " + e.getMessage());
             return null;
