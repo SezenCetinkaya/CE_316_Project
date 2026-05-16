@@ -13,6 +13,10 @@ set APP_HOME=%DIRNAME%
 @rem Resolve any "." and ".." in APP_HOME to make it shorter.
 for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 
+@rem Project-local Gradle home (ASCII path on D:). Avoids daemon failures when
+@rem the Windows user profile path contains non-ASCII characters (e.g. Uğur).
+if not defined GRADLE_USER_HOME set "GRADLE_USER_HOME=%APP_HOME%.gradle-home"
+
 set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
 
 @rem Find java.exe

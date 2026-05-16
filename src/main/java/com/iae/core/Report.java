@@ -24,8 +24,10 @@ public class Report {
                 .orElse(0.0);
     }
 
-    // Getters
     public int getTotalStudents() { return totalStudents; }
     public int getPassedCount() { return passedCount; }
+    public int getFailedCount() { return failedCount; }
+    public int getCompileErrorCount() { return compileErrorCount; }
+    public double getAverageTimeMs() { return averageTimeMs; }
     public double getSuccessRate() { return totalStudents == 0 ? 0 : (double) passedCount / totalStudents * 100; }
 }

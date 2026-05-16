@@ -49,6 +49,16 @@ public class Configuration {
     public int getTimeoutSeconds() { return timeoutSeconds; }
     public void setTimeoutSeconds(int timeoutSeconds) { this.timeoutSeconds = timeoutSeconds; }
 
+    @Override
+    public String toString() {
+        if (name != null && !name.isBlank()) {
+            return language != null && !language.isBlank()
+                    ? name + " (" + language + ")"
+                    : name;
+        }
+        return "Unnamed configuration";
+    }
+
     public void exportToFile(String path) {
         Properties props = new Properties();
 

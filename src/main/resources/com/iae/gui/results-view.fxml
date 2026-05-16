@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.iae.gui.ResultsController" spacing="12"
+      stylesheets="@styles.css">
+
+    <HBox fx:id="statsHeader" spacing="12" alignment="CENTER_LEFT">
+        <Label text="Results" styleClass="section-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="statTotalLabel" text="Total: 0" styleClass="stat-chip, stat-chip-neutral"/>
+        <Label fx:id="statPassLabel" text="Pass: 0" styleClass="stat-chip, stat-chip-pass"/>
+        <Label fx:id="statFailLabel" text="Fail: 0" styleClass="stat-chip, stat-chip-fail"/>
+        <Label fx:id="statErrorLabel" text="Errors: 0" styleClass="stat-chip, stat-chip-error"/>
+        <Button text="Refresh" onAction="#refreshResults" styleClass="secondary-button"/>
+    </HBox>
+
+    <TableView fx:id="resultsTable" VBox.vgrow="ALWAYS" styleClass="results-table"
+               prefHeight="220" minHeight="160">
+        <columns>
+            <TableColumn fx:id="colStudentId" text="Student ID" prefWidth="120"/>
+            <TableColumn fx:id="colZipFile" text="ZIP File" prefWidth="140"/>
+            <TableColumn fx:id="colCompile" text="Compile" prefWidth="110"/>
+            <TableColumn fx:id="colRun" text="Result" prefWidth="100"/>
+            <TableColumn fx:id="colTime" text="Time (ms)" prefWidth="90"/>
+            <TableColumn fx:id="colEvaluated" text="Evaluated At" prefWidth="160"/>
+        </columns>
+    </TableView>
+
+    <Label text="Error / output log" styleClass="field-label"/>
+    <TextArea fx:id="errorLogArea" wrapText="true" editable="false"
+              prefRowCount="5" styleClass="error-log"/>
+
+</VBox>

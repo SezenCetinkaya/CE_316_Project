@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.iae.gui.MainController"
+            stylesheets="@styles.css" styleClass="root-pane">
+
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="New Project…" onAction="#onNewProject" accelerator="Ctrl+N"/>
+                    <MenuItem text="Open Project…" onAction="#onOpenProject" accelerator="Ctrl+O"/>
+                    <MenuItem text="Save Project" onAction="#onSaveProject" accelerator="Ctrl+S"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Exit" onAction="#onExit"/>
+                </Menu>
+                <Menu text="Configuration">
+                    <MenuItem text="Manage Configurations…" onAction="#onManageConfigurations"/>
+                </Menu>
+                <Menu text="Help">
+                    <MenuItem text="User Manual" onAction="#onOpenHelp"/>
+                    <MenuItem text="About IAE" onAction="#onAbout"/>
+                </Menu>
+            </MenuBar>
+
+            <HBox fx:id="toolbarBox" styleClass="toolbar" spacing="8">
+                <Label text="IAE" styleClass="app-title-label"/>
+                <Separator orientation="VERTICAL"/>
+                <Button text="New Project" onAction="#onNewProject" styleClass="secondary-button"/>
+                <Button text="Open" onAction="#onOpenProject" styleClass="secondary-button"/>
+                <Button text="Save" onAction="#onSaveProject" styleClass="secondary-button"/>
+                <Separator orientation="VERTICAL"/>
+                <Button text="Configurations" onAction="#onManageConfigurations" styleClass="secondary-button"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="runButton" text="Run Evaluation" onAction="#onRunEvaluation"
+                        styleClass="primary-button" disable="true"/>
+                <ProgressIndicator fx:id="runProgress" prefWidth="24" prefHeight="24"
+                                   visible="false" styleClass="progress-indicator"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="contentBox" spacing="16">
+                <padding><Insets top="8" right="16" bottom="16" left="16"/></padding>
+
+                <VBox fx:id="projectCard" spacing="12" styleClass="section-card">
+                    <Label text="Current Project" styleClass="section-title"/>
+                    <GridPane hgap="12" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="140" prefWidth="150"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                            <ColumnConstraints minWidth="80"/>
+                        </columnConstraints>
+
+                        <Label text="Project name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="projectNameField" editable="false" styleClass="readonly-field"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2"
+                                   promptText="No project open"/>
+
+                        <Label text="Configuration" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="configNameField" editable="false" styleClass="readonly-field"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                        <Label text="Submission folder" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="submissionDirField" editable="false" styleClass="readonly-field"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <Button text="Browse…" onAction="#onBrowseSubmissions" styleClass="secondary-button"
+                                GridPane.rowIndex="2" GridPane.columnIndex="2" disable="true" fx:id="browseSubmissionsBtn"/>
+
+                        <Label text="Expected output file" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="expectedOutputField" editable="false" styleClass="readonly-field"
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <Button text="Browse…" onAction="#onBrowseExpectedOutput" styleClass="secondary-button"
+                                GridPane.rowIndex="3" GridPane.columnIndex="2" disable="true" fx:id="browseExpectedBtn"/>
+
+                        <Label text="Run arguments" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+                        <TextField fx:id="runArgsField" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.columnSpan="2"
+                                   promptText="Command-line arguments passed to student program"
+                                   disable="true"/>
+                    </GridPane>
+                </VBox>
+
+                <VBox fx:id="resultsCard" styleClass="section-card">
+                    <fx:include fx:id="resultsPanel" source="results-view.fxml"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox fx:id="statusBar" styleClass="status-bar">
+            <Label fx:id="statusLabel" text="Ready — create or open a project to begin."/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="projectStatusLabel" text="No project loaded"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

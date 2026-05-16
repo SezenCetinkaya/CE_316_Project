@@ -2,6 +2,8 @@
 build/
 C:/tmp/iae-build/
 .gradle/
+.gradle-home/
+.openjfx-cache/
 .temp/
 temp/
 

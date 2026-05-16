@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="configRoot" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.iae.gui.ConfigurationController"
+            prefWidth="720" prefHeight="520"
+            stylesheets="@styles.css" styleClass="root-pane">
+
+    <top>
+        <VBox spacing="4" styleClass="toolbar">
+            <padding><Insets top="12" right="16" bottom="8" left="16"/></padding>
+            <Label text="Language Configurations" styleClass="section-title"/>
+            <Label text="Define how each programming language is compiled and run."
+                   styleClass="field-label"/>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="16">
+            <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
+            <VBox spacing="8" prefWidth="200">
+                <Label text="Saved configurations" styleClass="field-label"/>
+                <ListView fx:id="configList" VBox.vgrow="ALWAYS" styleClass="config-list"
+                          prefHeight="320"/>
+                <HBox spacing="8">
+                    <Button text="New" onAction="#onNew" styleClass="secondary-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    <Button text="Delete" onAction="#onDelete" styleClass="danger-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                </HBox>
+            </VBox>
+
+            <VBox fx:id="configFormCard" spacing="10" HBox.hgrow="ALWAYS" styleClass="section-card">
+                <GridPane hgap="12" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="130" prefWidth="140"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Language" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <TextField fx:id="languageField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                               promptText="e.g. C, Java, Python"/>
+
+                    <Label text="Compiler path" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <HBox spacing="8" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                        <TextField fx:id="compilerPathField" HBox.hgrow="ALWAYS"
+                                   promptText="e.g. gcc or javac"/>
+                        <Button text="Browse…" onAction="#onBrowseCompiler" styleClass="secondary-button"/>
+                    </HBox>
+
+                    <Label text="Compile arguments" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <TextField fx:id="compileArgsField" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                               promptText="e.g. -o main"/>
+
+                    <Label text="Source filename" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <TextField fx:id="sourceFilenameField" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                               promptText="e.g. main.c"/>
+
+                    <Label text="Run command" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <TextField fx:id="runCommandField" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                               promptText="e.g. ./main or java Main"/>
+
+                    <Label text="Timeout (seconds)" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <Spinner fx:id="timeoutSpinner" GridPane.rowIndex="6" GridPane.columnIndex="1"
+                             editable="true" prefWidth="100"/>
+
+                    <Label text="Interpreted language" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="field-label"/>
+                    <CheckBox fx:id="interpretedCheck" text="Skip compile step (Python, etc.)"
+                              GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                </GridPane>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="toolbar">
+            <padding><Insets top="8" right="16" bottom="12" left="16"/></padding>
+            <Button text="Import…" onAction="#onImport" styleClass="secondary-button"/>
+            <Button text="Export…" onAction="#onExport" styleClass="secondary-button"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Save" onAction="#onSave" styleClass="primary-button" defaultButton="true"/>
+            <Button text="Close" onAction="#onClose" styleClass="secondary-button" cancelButton="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

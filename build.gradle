@@ -8,8 +8,9 @@ group = 'com.iae'
 version = '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
@@ -38,11 +39,14 @@ dependencies {
 
 application {
     mainClass = 'com.iae.Main'
+    applicationDefaultJvmArgs = [
+            "-Djavafx.cachedir=${file("${rootDir}/.openjfx-cache").absolutePath}"
+    ]
 }
 
-// buildDir temiz ASCII yolda: Masaüstü içindeki ü harfi Gradle test-worker @classpath.txt
-// dosyasında encoding bozukluğuna neden oluyor; bu workaround ile kaçınılıyor
-buildDir = file("${rootDir}/temp")
+tasks.withType(JavaExec).configureEach {
+    jvmArgs "-Djavafx.cachedir=${file("${rootDir}/.openjfx-cache").absolutePath}"
+}
 
 test {
     useJUnitPlatform()
@@ -50,9 +54,8 @@ test {
 }
 
 // Fat-JAR: tüm bağımlılıklar tek jar içinde — Inno Setup bu jar'ı dağıtır (R1)
-// destinationDirectory: proje kökündeki dist/ klasörü (buildDir Masaüstü ü sorunu nedeniyle dışarıda kalıyor)
 jar {
-    destinationDirectory = file("${rootDir}/temp")
+    destinationDirectory = layout.buildDirectory.dir("libs")
     manifest {
         attributes 'Main-Class': 'com.iae.Main'
     }
